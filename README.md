@@ -2,7 +2,7 @@
 
 Course website: https://lasr.cs.ucla.edu/classes/cs111_summer2017/
 
-#Project Implementations
+## Project Implementations
 
 Assignment Specification|Assignment Implementation
 -----------------|---------------------
