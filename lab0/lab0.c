@@ -117,7 +117,7 @@ int main(int argc, char **argv)
         {
           fprintf(stderr, "Error creating file. Exiting with exit code *3*\n");
           exit(3);
-  }
+         }
       write(fd1, data, strlen(data));
 
     }
