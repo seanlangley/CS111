@@ -1,1 +1,22 @@
+NAME: Sean Langleu
+EMAIL: sean.langley22@gmail.com
+ID: 504 661 838
 
+
+The tarbal contains the following files:
+lab1b-client.c: the client side program which sends commands to a sever shell and which receives output from that shell and outputs it onto the console. 
+
+lab1b-server.c: The server side of the program. The server forks a new process which opens a shell. It then reads characters from the client side of the program, inputs that into the shell, and sends the results back to the client's console. 
+		
+Makefile: The standard makefile to compile the executables. Compilation is done by typing: 
+	  make
+my.key:
+	A randomized key file used for encryption when the --encrypt option is used
+
+	 
+RESEARCH: 
+mcrypt man pages: https://linux.die.net/man/3/mcrypt
+socket tutorial and reference: http://www.cs.rpi.edu/~moorthy/Courses/os98/Pgms/socket.html
+kill man pages: https://linux.die.net/man/2/kill
+socket (7) man pages: https://linux.die.net/man/7/socket
+socket(2) man pages: https://linux.die.net/man/2/socket
