@@ -8,4 +8,4 @@ Assignment Specification|Assignment Implementation
 -----------------|---------------------
 [0: Warm Up](https://lasr.cs.ucla.edu/classes/cs111_summer2017/projects/p0/P0.html)|[Project 0](https://github.com/seanlangley/CS111/tree/master/lab0)
 [1A: Terminal I/O and Inter-Process Communication](https://lasr.cs.ucla.edu/classes/cs111_summer2017/projects/p1/P1A.html)|[Project 1A](https://github.com/seanlangley/CS111/tree/master/lab1A)
-1B: Encrypted Network Communications|[Project 1B](https://github.com/seanlangley/CS111/tree/master/lab1b)
+[1B: Encrypted Network Communications](http://htmlpreview.github.io/?https://raw.githubusercontent.com/seanlangley/CS111/master/lab1b/P1B.html)|[Project 1B](https://github.com/seanlangley/CS111/tree/master/lab1b)
