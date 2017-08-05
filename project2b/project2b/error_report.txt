@@ -1,0 +1,96 @@
+... Using temporary testing directory /tmp/TestTemp.12045
+... untaring
+lab2_list.c
+SortedList.c
+SortedList.h
+Makefile
+lab2b_list.csv
+lab2b_1.png
+lab2b_2.png
+lab2b_3.png
+lab2b_4.png
+lab2b_5.png
+README
+profile.out
+tests.sh
+... checking for expected files
+        README ... OK
+        Makefile ... OK
+        lab2_list.c ... OK
+        SortedList.c ... OK
+        SortedList.h ... OK
+        lab2b_list.csv ... OK
+        lab2b_1.png ... OK
+        lab2b_2.png ... OK
+        lab2b_3.png ... OK
+        lab2b_4.png ... OK
+        lab2b_5.png ... OK
+        profile.out ... OK
+... checking for submitter info in README
+        NAME: ... SeanLangley
+        EMAIL: ... sean.langley22@gmail.com
+        ID: ... 504661838
+... checking for expected make targets
+        clean ... OK
+        dist ... OK
+        tests ... OK
+        graphs ... OK
+        profile ... OK
+... checking for other files of expected types
+... building default target(s)
+make[1]: Entering directory `/tmp/TestTemp.12045'
+gcc -pthread -g -Wall -o lab2_list lab2_list.c SortedList.c
+make[1]: Leaving directory `/tmp/TestTemp.12045'
+... make clean
+make[1]: Entering directory `/tmp/TestTemp.12045'
+rm -rf lab2b-504661838.tar.gz lab2_list *.png *.csv profile.out raw error_report.txt
+make[1]: Leaving directory `/tmp/TestTemp.12045'
+... confirming removal of Makefile products
+... confirming removal of object modules and debug symbols
+... make dist
+make[1]: Entering directory `/tmp/TestTemp.12045'
+tar -czvf lab2b-504661838.tar.gz *.c *.h Makefile *.csv *.png README *.out tests.sh
+lab2_list.c
+SortedList.c
+SortedList.h
+Makefile
+README
+tests.sh
+make[1]: Leaving directory `/tmp/TestTemp.12045'
+ERROR: make dist fails RC=2
+... confirming creation of tarball
+... re-building default target(s)
+make[1]: Entering directory `/tmp/TestTemp.12045'
+gcc -pthread -g -Wall -o lab2_list lab2_list.c SortedList.c
+make[1]: Leaving directory `/tmp/TestTemp.12045'
+... checking for expected products
+        lab2_list ... OK
+... lab2_list detects/reports bogus arguments
+./lab2_list: unrecognized option '--bogus'
+Error: Exiting with error code 1.
+... testing  --iterations=2 --threads=1 --yield=idl --sync=m --lists=2
+        RC=0 ... OK
+        number of fields ... 8 (includes wait time)
+        output tag ... OK
+        threads field ... OK
+        iterations field ... OK
+        lists field ... OK
+        operations field ... threads x iterations x 3
+        tot time ... plausible
+        tot/ops ... OK
+        wait/op ... plausible
+... testing  --iterations=2 --threads=1 --yield=idl --sync=s --lists=2
+        RC=0 ... OK
+        number of fields ... 8 (includes wait time)
+        output tag ... OK
+        threads field ... OK
+        iterations field ... OK
+        lists field ... OK
+        operations field ... threads x iterations x 3
+        tot time ... plausible
+        tot/ops ... OK
+        wait/op ... plausible
+
+SUBMISSION lab2b-504661838.tar.gz ... fails sanity check with 1 errors!
+
+

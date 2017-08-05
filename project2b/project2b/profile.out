@@ -1,0 +1,376 @@
+ROUTINE ====================== thread_function in /u/ee/ugrad/seanl/cs111/project2b/lab2_list.c
+  3428   3621 Total samples (flat / cumulative)
+     .      .  135:   return list_len;
+     .      .  136: }
+     .      .  137: 
+     .      .  138: 
+     .      .  139: void *thread_function(void *arg)
+---
+     .      .  140: {
+     .      .  141:   int threadid = *(int *)arg;
+     .      .  142:   timespec_t lockstart, lockend;
+     .      .  143:   int i;
+     .      .  144:   for(i = threadid; i < NUM_ITERATIONS * NUM_THREADS; i += NUM_THREADS)
+     .      .  145:     {
+     .      .  146: 
+     .      .  147:       if(NUM_LISTS > 1)
+     .      .  148: 	{
+     .      .  149: 	  //Get the list that the key should be insterted in
+     .      .  150: 	  int listnum = hash(elements[i].key) % NUM_LISTS;
+     .      .  151: 
+     .      .  152: 	  if(opt_sync == 'm')
+     .      .  153: 	    {
+     .      .  154: 	      clock_gettime(CLOCK_MONOTONIC, &lockstart);
+     .      .  155: 	      pthread_mutex_lock(&(synced_lists[listnum]->lock));
+     .      .  156: 	      clock_gettime(CLOCK_MONOTONIC, &lockend);
+     .      .  157: 	      add_time(&lockstart, &lockend);
+     .      .  158: 	      
+     .      .  159: 	      SortedList_insert(synced_lists[listnum]->list, &elements[i]);
+     .      .  160: 	      pthread_mutex_unlock(&(synced_lists[listnum]->lock));
+     .      .  161: 	    }
+     .      .  162: 	  else if(opt_sync == 's')
+     .      .  163: 	    {
+     .      .  164: 	      clock_gettime(CLOCK_MONOTONIC, &lockstart);
+     .      .  165: 	      while(__sync_lock_test_and_set(&synced_lists[listnum]->s_lock, 1) == 1);
+     .      .  166: 	      clock_gettime(CLOCK_MONOTONIC, &lockend);
+     .      .  167: 	      add_time(&lockstart, &lockend);
+     .      .  168: 
+     .      .  169: 	      SortedList_insert(synced_lists[listnum]->list, &elements[i]);
+     .      .  170: 	      __sync_lock_release(&synced_lists[listnum]->s_lock);
+     .      .  171: 	    }
+     .      .  172: 
+     .      .  173: 	  else
+     .      .  174: 	    SortedList_insert(synced_lists[listnum]->list, &elements[i]);
+     .      .  175: 	}
+     .      .  176:     
+     .      .  177: 
+     .      .  178: 
+     .      .  179:       /*If the --lists option isn't used*/
+     .      .  180:       else if(NUM_LISTS == 1)
+     .      .  181: 	{
+     .      .  182: 	  if(opt_sync == 'm')
+     .      .  183: 	    {
+     .      .  184: 	      clock_gettime(CLOCK_MONOTONIC, &lockstart);
+     .      .  185: 	      pthread_mutex_lock(&mutex);
+     .      .  186: 	      clock_gettime(CLOCK_MONOTONIC, &lockend);
+     .      .  187: 	      add_time(&lockstart, &lockend);
+     .      .  188: 	  
+     .      .  189: 	      SortedList_insert(list, &elements[i]);
+     .      .  190: 	      pthread_mutex_unlock(&mutex);
+     .      .  191: 
+     .      .  192: 
+     .      .  193: 	    }
+     .      .  194: 	  else if(opt_sync == 's')
+     .      .  195: 	    {
+     .      .  196: 	  
+     .      .  197: 	      clock_gettime(CLOCK_MONOTONIC, &lockstart);
+  1465   1465  198: 	      while(__sync_lock_test_and_set(&lock, 1) == 1);
+     .      .  199: 	      clock_gettime(CLOCK_MONOTONIC, &lockend);
+     .      .  200: 	      add_time(&lockstart, &lockend);
+     .      .  201: 
+     1     72  202: 	      SortedList_insert(list, &elements[i]);
+     .      .  203: 	      __sync_lock_release(&lock);
+     .      .  204: 
+     .      .  205: 	    }
+     .      .  206: 	  else	    
+     .      .  207: 	    SortedList_insert(list, &elements[i]);
+     .      .  208: 
+     .      .  209: 	}      
+     .      .  210: 
+     .      .  211:     }    
+     .      .  212: 
+     .      .  213:   if(NUM_LISTS == 1)
+     .      .  214:     SortedList_length(list);
+     .      .  215:   else if(NUM_LISTS > 1)
+     .      .  216:     list_length();
+     .      .  217:   SortedListElement_t *temp;
+     .      .  218:   for(i = threadid; i < NUM_ITERATIONS * NUM_THREADS; i += NUM_THREADS)
+     .      .  219:     {
+     .      .  220:       
+     .      .  221:       if(NUM_LISTS > 1)
+     .      .  222: 	{
+     .      .  223: 	  int listnum = hash(elements[i].key) % NUM_LISTS;
+     .      .  224: 
+     .      .  225: 	  if(opt_sync == 'm')
+     .      .  226: 	    {
+     .      .  227: 	      clock_gettime(CLOCK_MONOTONIC, &lockstart);
+     .      .  228: 	      pthread_mutex_lock(&(synced_lists[listnum]->lock));
+     .      .  229: 	      clock_gettime(CLOCK_MONOTONIC, &lockend);
+     .      .  230: 	      add_time(&lockstart, &lockend);
+     .      .  231: 
+     .      .  232: 	      temp = SortedList_lookup(synced_lists[listnum]->list, elements[i].key);
+     .      .  233: 
+     .      .  234: 	      if(temp == NULL)
+     .      .  235: 		exit_failure2("Key not found.");
+     .      .  236: 	      SortedList_delete(temp);
+     .      .  237: 	      pthread_mutex_unlock(&(synced_lists[listnum]->lock));
+     .      .  238: 	    }
+     .      .  239: 	  else if(opt_sync == 's')
+     .      .  240: 	    {
+     .      .  241: 	      clock_gettime(CLOCK_MONOTONIC, &lockstart);
+     .      .  242: 	      while(__sync_lock_test_and_set(&synced_lists[listnum]->s_lock, 1) == 1);
+     .      .  243: 	      clock_gettime(CLOCK_MONOTONIC, &lockend);
+     .      .  244: 	      add_time(&lockstart, &lockend);
+     .      .  245: 
+     .      .  246: 	      temp = SortedList_lookup(synced_lists[listnum]->list, elements[i].key);
+     .      .  247: 	      if(temp == NULL)
+     .      .  248: 		exit_failure2("Key not found.");
+     .      .  249: 	      
+     .      .  250: 	      SortedList_delete(temp);
+     .      .  251: 	      __sync_lock_release(&synced_lists[listnum]->s_lock);
+     .      .  252: 
+     .      .  253: 	    }
+     .      .  254:       
+     .      .  255: 	  else
+     .      .  256: 	    {
+     .      .  257: 	      temp = SortedList_lookup(synced_lists[listnum]->list, elements[i].key);
+     .      .  258: 	      if(temp == NULL)
+     .      .  259: 		exit_failure2("Key not found.");
+     .      .  260: 	      
+     .      .  261: 	      SortedList_delete(temp);
+     .      .  262: 	    }
+     .      .  263: 	}
+     .      .  264: 
+     .      .  265: 
+     .      .  266:       /*If the --lists option isn't used*/
+     .      .  267:       else if(NUM_LISTS == 1)
+     .      .  268: 	{
+     .      .  269: 	  if(opt_sync == 'm')
+     .      .  270: 	    {
+     .      .  271: 	  
+     .      .  272: 	      clock_gettime(CLOCK_MONOTONIC, &lockstart);
+     .      .  273: 	      pthread_mutex_lock(&mutex);
+     .      .  274: 	      clock_gettime(CLOCK_MONOTONIC, &lockend);
+     .      .  275: 	      add_time(&lockstart, &lockend);
+     .      .  276: 
+     .      .  277: 
+     .      .  278: 	      temp = SortedList_lookup(list, elements[i].key);
+     .      .  279: 	      if(temp == NULL)
+     .      .  280: 		exit_failure2("Key not found.");
+     .      .  281: 
+     .      .  282: 	      SortedList_delete(temp);
+     .      .  283: 	      pthread_mutex_unlock(&mutex);
+     .      .  284: 	    }
+     .      .  285: 	  else if(opt_sync == 's')
+     .      .  286: 	    {
+     .      .  287: 
+     .      .  288: 	      clock_gettime(CLOCK_MONOTONIC, &lockstart);
+  1962   1962  289: 	      while(__sync_lock_test_and_set(&lock, 1) == 1);
+     .      .  290: 	      clock_gettime(CLOCK_MONOTONIC, &lockend);
+     .      .  291: 	      add_time(&lockstart, &lockend);
+     .      .  292: 	  
+     .    122  293: 	      temp = SortedList_lookup(list, elements[i].key);
+     .      .  294: 	      if(temp == NULL)	       
+     .      .  295: 		exit_failure2("Key not found.");
+     .      .  296: 
+     .      .  297: 	      SortedList_delete(temp);
+     .      .  298: 	      __sync_lock_release(&lock);
+     .      .  299: 
+     .      .  300: 	    }
+     .      .  301: 	  else
+     .      .  302: 	    {
+     .      .  303: 	      temp = SortedList_lookup(list, elements[i].key);
+     .      .  304: 	      if(temp == NULL)
+     .      .  305: 		exit_failure2("Key not found.");
+     .      .  306: 
+     .      .  307: 	      SortedList_delete(temp);
+     .      .  308: 	    }
+     .      .  309: 	}
+     .      .  310: 
+     .      .  311:     }
+     .      .  312: 
+     .      .  313:   pthread_exit(NULL);
+---
+     .      .  314:   return NULL;
+     .      .  315: }
+     .      .  316: 
+     .      .  317: void set_test_name()
+     .      .  318: {
+ROUTINE ====================== thread_function in /u/ee/ugrad/seanl/cs111/project2b/lab2_list.c
+  3428   3621 Total samples (flat / cumulative)
+     .      .  135:   return list_len;
+     .      .  136: }
+     .      .  137: 
+     .      .  138: 
+     .      .  139: void *thread_function(void *arg)
+---
+     .      .  140: {
+     .      .  141:   int threadid = *(int *)arg;
+     .      .  142:   timespec_t lockstart, lockend;
+     .      .  143:   int i;
+     .      .  144:   for(i = threadid; i < NUM_ITERATIONS * NUM_THREADS; i += NUM_THREADS)
+     .      .  145:     {
+     .      .  146: 
+     .      .  147:       if(NUM_LISTS > 1)
+     .      .  148: 	{
+     .      .  149: 	  //Get the list that the key should be insterted in
+     .      .  150: 	  int listnum = hash(elements[i].key) % NUM_LISTS;
+     .      .  151: 
+     .      .  152: 	  if(opt_sync == 'm')
+     .      .  153: 	    {
+     .      .  154: 	      clock_gettime(CLOCK_MONOTONIC, &lockstart);
+     .      .  155: 	      pthread_mutex_lock(&(synced_lists[listnum]->lock));
+     .      .  156: 	      clock_gettime(CLOCK_MONOTONIC, &lockend);
+     .      .  157: 	      add_time(&lockstart, &lockend);
+     .      .  158: 	      
+     .      .  159: 	      SortedList_insert(synced_lists[listnum]->list, &elements[i]);
+     .      .  160: 	      pthread_mutex_unlock(&(synced_lists[listnum]->lock));
+     .      .  161: 	    }
+     .      .  162: 	  else if(opt_sync == 's')
+     .      .  163: 	    {
+     .      .  164: 	      clock_gettime(CLOCK_MONOTONIC, &lockstart);
+     .      .  165: 	      while(__sync_lock_test_and_set(&synced_lists[listnum]->s_lock, 1) == 1);
+     .      .  166: 	      clock_gettime(CLOCK_MONOTONIC, &lockend);
+     .      .  167: 	      add_time(&lockstart, &lockend);
+     .      .  168: 
+     .      .  169: 	      SortedList_insert(synced_lists[listnum]->list, &elements[i]);
+     .      .  170: 	      __sync_lock_release(&synced_lists[listnum]->s_lock);
+     .      .  171: 	    }
+     .      .  172: 
+     .      .  173: 	  else
+     .      .  174: 	    SortedList_insert(synced_lists[listnum]->list, &elements[i]);
+     .      .  175: 	}
+     .      .  176:     
+     .      .  177: 
+     .      .  178: 
+     .      .  179:       /*If the --lists option isn't used*/
+     .      .  180:       else if(NUM_LISTS == 1)
+     .      .  181: 	{
+     .      .  182: 	  if(opt_sync == 'm')
+     .      .  183: 	    {
+     .      .  184: 	      clock_gettime(CLOCK_MONOTONIC, &lockstart);
+     .      .  185: 	      pthread_mutex_lock(&mutex);
+     .      .  186: 	      clock_gettime(CLOCK_MONOTONIC, &lockend);
+     .      .  187: 	      add_time(&lockstart, &lockend);
+     .      .  188: 	  
+     .      .  189: 	      SortedList_insert(list, &elements[i]);
+     .      .  190: 	      pthread_mutex_unlock(&mutex);
+     .      .  191: 
+     .      .  192: 
+     .      .  193: 	    }
+     .      .  194: 	  else if(opt_sync == 's')
+     .      .  195: 	    {
+     .      .  196: 	  
+     .      .  197: 	      clock_gettime(CLOCK_MONOTONIC, &lockstart);
+  1465   1465  198: 	      while(__sync_lock_test_and_set(&lock, 1) == 1);
+     .      .  199: 	      clock_gettime(CLOCK_MONOTONIC, &lockend);
+     .      .  200: 	      add_time(&lockstart, &lockend);
+     .      .  201: 
+     1     72  202: 	      SortedList_insert(list, &elements[i]);
+     .      .  203: 	      __sync_lock_release(&lock);
+     .      .  204: 
+     .      .  205: 	    }
+     .      .  206: 	  else	    
+     .      .  207: 	    SortedList_insert(list, &elements[i]);
+     .      .  208: 
+     .      .  209: 	}      
+     .      .  210: 
+     .      .  211:     }    
+     .      .  212: 
+     .      .  213:   if(NUM_LISTS == 1)
+     .      .  214:     SortedList_length(list);
+     .      .  215:   else if(NUM_LISTS > 1)
+     .      .  216:     list_length();
+     .      .  217:   SortedListElement_t *temp;
+     .      .  218:   for(i = threadid; i < NUM_ITERATIONS * NUM_THREADS; i += NUM_THREADS)
+     .      .  219:     {
+     .      .  220:       
+     .      .  221:       if(NUM_LISTS > 1)
+     .      .  222: 	{
+     .      .  223: 	  int listnum = hash(elements[i].key) % NUM_LISTS;
+     .      .  224: 
+     .      .  225: 	  if(opt_sync == 'm')
+     .      .  226: 	    {
+     .      .  227: 	      clock_gettime(CLOCK_MONOTONIC, &lockstart);
+     .      .  228: 	      pthread_mutex_lock(&(synced_lists[listnum]->lock));
+     .      .  229: 	      clock_gettime(CLOCK_MONOTONIC, &lockend);
+     .      .  230: 	      add_time(&lockstart, &lockend);
+     .      .  231: 
+     .      .  232: 	      temp = SortedList_lookup(synced_lists[listnum]->list, elements[i].key);
+     .      .  233: 
+     .      .  234: 	      if(temp == NULL)
+     .      .  235: 		exit_failure2("Key not found.");
+     .      .  236: 	      SortedList_delete(temp);
+     .      .  237: 	      pthread_mutex_unlock(&(synced_lists[listnum]->lock));
+     .      .  238: 	    }
+     .      .  239: 	  else if(opt_sync == 's')
+     .      .  240: 	    {
+     .      .  241: 	      clock_gettime(CLOCK_MONOTONIC, &lockstart);
+     .      .  242: 	      while(__sync_lock_test_and_set(&synced_lists[listnum]->s_lock, 1) == 1);
+     .      .  243: 	      clock_gettime(CLOCK_MONOTONIC, &lockend);
+     .      .  244: 	      add_time(&lockstart, &lockend);
+     .      .  245: 
+     .      .  246: 	      temp = SortedList_lookup(synced_lists[listnum]->list, elements[i].key);
+     .      .  247: 	      if(temp == NULL)
+     .      .  248: 		exit_failure2("Key not found.");
+     .      .  249: 	      
+     .      .  250: 	      SortedList_delete(temp);
+     .      .  251: 	      __sync_lock_release(&synced_lists[listnum]->s_lock);
+     .      .  252: 
+     .      .  253: 	    }
+     .      .  254:       
+     .      .  255: 	  else
+     .      .  256: 	    {
+     .      .  257: 	      temp = SortedList_lookup(synced_lists[listnum]->list, elements[i].key);
+     .      .  258: 	      if(temp == NULL)
+     .      .  259: 		exit_failure2("Key not found.");
+     .      .  260: 	      
+     .      .  261: 	      SortedList_delete(temp);
+     .      .  262: 	    }
+     .      .  263: 	}
+     .      .  264: 
+     .      .  265: 
+     .      .  266:       /*If the --lists option isn't used*/
+     .      .  267:       else if(NUM_LISTS == 1)
+     .      .  268: 	{
+     .      .  269: 	  if(opt_sync == 'm')
+     .      .  270: 	    {
+     .      .  271: 	  
+     .      .  272: 	      clock_gettime(CLOCK_MONOTONIC, &lockstart);
+     .      .  273: 	      pthread_mutex_lock(&mutex);
+     .      .  274: 	      clock_gettime(CLOCK_MONOTONIC, &lockend);
+     .      .  275: 	      add_time(&lockstart, &lockend);
+     .      .  276: 
+     .      .  277: 
+     .      .  278: 	      temp = SortedList_lookup(list, elements[i].key);
+     .      .  279: 	      if(temp == NULL)
+     .      .  280: 		exit_failure2("Key not found.");
+     .      .  281: 
+     .      .  282: 	      SortedList_delete(temp);
+     .      .  283: 	      pthread_mutex_unlock(&mutex);
+     .      .  284: 	    }
+     .      .  285: 	  else if(opt_sync == 's')
+     .      .  286: 	    {
+     .      .  287: 
+     .      .  288: 	      clock_gettime(CLOCK_MONOTONIC, &lockstart);
+  1962   1962  289: 	      while(__sync_lock_test_and_set(&lock, 1) == 1);
+     .      .  290: 	      clock_gettime(CLOCK_MONOTONIC, &lockend);
+     .      .  291: 	      add_time(&lockstart, &lockend);
+     .      .  292: 	  
+     .    122  293: 	      temp = SortedList_lookup(list, elements[i].key);
+     .      .  294: 	      if(temp == NULL)	       
+     .      .  295: 		exit_failure2("Key not found.");
+     .      .  296: 
+     .      .  297: 	      SortedList_delete(temp);
+     .      .  298: 	      __sync_lock_release(&lock);
+     .      .  299: 
+     .      .  300: 	    }
+     .      .  301: 	  else
+     .      .  302: 	    {
+     .      .  303: 	      temp = SortedList_lookup(list, elements[i].key);
+     .      .  304: 	      if(temp == NULL)
+     .      .  305: 		exit_failure2("Key not found.");
+     .      .  306: 
+     .      .  307: 	      SortedList_delete(temp);
+     .      .  308: 	    }
+     .      .  309: 	}
+     .      .  310: 
+     .      .  311:     }
+     .      .  312: 
+     .      .  313:   pthread_exit(NULL);
+---
+     .      .  314:   return NULL;
+     .      .  315: }
+     .      .  316: 
+     .      .  317: void set_test_name()
+     .      .  318: {

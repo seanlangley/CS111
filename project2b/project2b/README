@@ -1,0 +1,68 @@
+NAME: Sean Langley
+EMAIL: sean.langley22@gmail.com
+ID: 504661838
+
+QUESTION ANSWERS
+================
+QUESTION 2.3.1 -- Cycles in the basic list implementation:
+Where do you believe most of the cycles are spent in the 1 and 2-thread list tests ?
+
+Why do you believe these to be the most expensive parts of the code?
+
+Where do you believe most of the time/cycles are being spent in the high-thread spin-lock tests?
+
+Where do you believe most of the time/cycles are being spent in the high-thread mutex tests?
+
+
+
+In the 1 and 2 thread list tests, most of the cycles are probably spent executing actual code. Throughput is very high for this number of threads because there aren't any cpu cycles wasted spinning or waiting for the lock. For the 1 threaded execution, only 1 instruction is spent on locking code because it's impossible that the thread will ever try to get the lock and the lock will be unavailable. The 2 threaded version will have some time slices spend just waiting for the lock, but because the thread number is only two, only every other time cycle will be wasted either spinning (in the case of a spin lock) or blocking (in the case of a mutex).
+
+The most expensive parts of the code are definitely the linked list operations that happen within locks. 
+
+In high thread spin-lock tests, most of the time/cycles are being spent spinning the CPU while threads are waiting for the lock. When the first thread starts executing the code and gets the lock, it succeeds and proceeds to execute instructions. However, if in the middle of its time slice it gets interrupted by another thread, there's going to be a context switch and another thread will begin executing the thread function, attempting to get the lock. In the spin lock tests, it's going to spend its entire slice spinning the infinite while loop trying to get the lock. Because this is user-level code, it's running on only one core. This means that it's impossible for the thread with the lock to release it within the time slice of another thread. So this thread's entire time slice is wasted spinning and checking to see if it has the lock. This happens with all the threads until the thread that has the lock finishes executing the critical section and releases the lock, letting another thread get the lock and perform the critical section.
+
+In high thread mutex tests, most of the time/cycles are spent sending threads to sleep and waking them up again. The circumstances are the same as in the high thread spin-lock tests, except in this case due to the specifications of the pthread_mutex API, instead of spinning, the thread will simply yield (blocking itself) and the operating system will schedule another thread to execute. This will happen until the scheduler lets the original thread that actually has the lock run.
+
+====================================
+QUESTION 2.3.2 - Execution Profiling:
+Where (what lines of code) are consuming most of the cycles when the spin-lock version of the list exerciser is run with a large number of threads?
+
+Why does this operation become so expensive with large numbers of threads?
+
+According to the samples taken with the pprof profiler, a large majority of the cycles are being spent on the following line:
+while(__sync_lock_test_and_set(&lock, 1) == 1);
+
+This operation becomes expensive with a large number of threads because as the thread number increases, whenever there's a context switch from the thread that has the lock to a thread that doesn't have the lock, the thread that doesn't have the lock is going to spend its entire time slice in this while loop, spinning and checking to see if the lock is free. As the thread number increases, more threads waste their entire time slice spinning this while loop. Because this is user-level code, only one core is used at a time during execution, so time slices will be wasted until the thread that has the lock is scheduled into the CPU and finishes the critical section, releasing the lock.
+
+================================
+QUESTION 2.3.3 - Mutex Wait Time:
+Look at the average time per operation (vs # threads) and the average wait-for-mutex time (vs #threads).
+Why does the average lock-wait time rise so dramatically with the number of contending threads?
+Why does the completion time per operation rise (less dramatically) with the number of contending threads?
+How is it possible for the wait time per operation to go up faster (or higher) than the completion time per operation?
+
+The average lock wait time rises exponentially with the number of contending threads. This is because as the number of threads increase, there is a higher probability that a thread that doesn't hold the lock will be scheduled. This thread will then spend its entire time slice blocked, and will do nothing but perform a context switch which is an expensive operation.
+
+When the number of threads is high, the majority of time in the program is spent performing context switches. Time per operation rises less dramatically because the small amounts of time perforning actual work brings the average time down when it's added with the time spent waiting for locks.
+
+For the wait time per operation to to go up faster than the completion time per operation, simply increase the number of threads. The higher the thread number, the more the wait time will deviate from the completion time, and this average value of completion time will increase.
+
+
+================================================
+QUESTION 2.3.4 - Performance of Partitioned Lists
+Explain the change in performance of the synchronized methods as a function of the number of lists.
+Should the throughput continue increasing as the number of lists is further increased? If not, explain why not.
+It seems reasonable to suggest the throughput of an N-way partitioned list should be equivalent to the throughput of a single list with fewer (1/N) threads. Does this appear to be true in the above curves? If not, explain why not.
+
+As the number of lists increases, the throughput increases. The reason behind this has to do with synchronization. In my program, each list has a mutex or a sync lock associated with it. As the threads perform an insert and delete on a certain key, that key is put through a hash function with puts it in a particular list. Locks are held on each individual list. Because each list has its own individual lock, different threads can perform operations on different lists at the same time. As the number of sub lsits increases, the chance that a thread will spend its entire time slice spinning (in the case of a spin lock) or going to sleep (in the case of a mutex) becomes very low.
+
+Unfortunately, as the number of lists increases even higher, the throughput plateaus at a certain value. This happens because there's a certain point where the number of lists is such that when the scheduling algorithm switches to another thread, there is almost zero chance that the list that a particular thread is trying to operate on is locked. This probability approaches a zero value. The list number where that probability approaches zero is the number where the throughput will reach a plateau.
+
+
+
+
+
+
+OTHER FEATURES
+==============
+The hashing algorith used, djb2, is written by Dan Bernstein. The webpage where the hash function was found is here: http://www.cse.yorku.ca/~oz/hash.html. The hash function was changed so its argument is type const char* instead of unsigned char*.
