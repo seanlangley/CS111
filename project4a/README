@@ -1,0 +1,18 @@
+NAME: Sean Langley
+EMAIL: sean.langley22@gmail.com
+ID: 504 661 838
+
+
+EDISON SERIAL NUMBER: FZEDA652D02BM4501
+EDISON MAC ADDRESS: 90:b6:86:02:13:2b
+
+
+ipaddress.png shows the usb terminal connected to my system with a configured network address.
+
+scp.png shows the scp copy of the hello world program to the edison.
+
+compile.png shows the compilation and the running of the hello world program.
+
+git.png shows my cloning of a git repository.
+
+selfie.png is a selfie of me with my built edison!
