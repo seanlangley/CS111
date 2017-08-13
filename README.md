@@ -13,3 +13,4 @@ Assignment Specification|Assignment Implementation
 [2B: Lock Granularity and Performance](http://htmlpreview.github.io/?https://raw.githubusercontent.com/seanlangley/CS111/master/project2b/P2B.html)|[Project 2B](https://github.com/seanlangley/CS111/tree/master/project2b)
 [3A: File System Interpretation](http://htmlpreview.github.io/?https://raw.githubusercontent.com/seanlangley/CS111/master/project3a/P3A.html)|[Project 3A]()
 [4A: Edison Bring Up](http://htmlpreview.github.io/?https://raw.githubusercontent.com/seanlangley/CS111/master/project4a/P4A.html)|[Project 4A](https://github.com/seanlangley/CS111/tree/master/project4a)
+[4B: Edison Sensors](https://lasr.cs.ucla.edu/classes/cs111_summer2017/projects/p4/P4B.html)|[Project 4B](https://github.com/seanlangley/CS111/tree/master/lab4b)
