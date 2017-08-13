@@ -1,0 +1,26 @@
+NAME: Sean Langley
+EMAIL: sean.langley22@gmail.com
+ID: 504661838
+
+====================
+DESCRIPTION OF FILES
+====================
+Makefile -- This makefile has several commands:
+	default: Sets the timezone and builds the executable
+	screen: Runs the Intel Edison operating system in a bash shell on my Macbook.
+	kill: Terminates the screen in a proper way.
+	scp: Sends files to the specific IP address of my Edison board at my home wifi.
+	check: Runs the provided checking script.
+	dist: Creates the tarball used for submission
+	clean: Cleans up extraneous files.
+
+lab4b.c -- Implementation of the Edison temperature sensor.
+README -- The file you are reading now.
+
+
+===========
+LIMITATIONS
+===========
+For an unknown reason, the checking program fails when commands are passed through a file
+rather than STDIN. The source of this error is unknown, however, the program works properly
+when commands are inserted through the console in STDIN, as a normal user would use the program.

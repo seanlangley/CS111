@@ -1,0 +1,21 @@
+1) Use AIO functions in the MRAA library to get readings from the temperature sensor
+
+2) Sample a temperature at a configureable rate. The rate defaults at 1/second, but can be controlled by a --period=# command line parameter.
+
+3) Convert sensor values into a temperature. Report in Farenheit by default, but control with an optional command line parameter (--scale=C or --scale=F)
+
+4) Create a report for each sample. The sample includes:
+	a)Time of the sample in local timezone (localtime(3)), but the timezone needs to be configured first
+	b) single space
+	c) decimal temperature in degrees and tenths
+	d) newline character
+
+5) Write the report to stdout
+
+6)Append the report to a logfile (created on the edison) if logging is enabled with an optional --log=filename parameter
+
+7) Use GIPO functions in the MRAA library to sample the state of the button. When the button is pushed... 
+	a) Outputs and logs a final sample with the time and the string SHUTDOWN 	(instead of a temperature)
+	b) Exits
+
+8) 

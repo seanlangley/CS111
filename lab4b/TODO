@@ -1,0 +1,51 @@
+TODO FOR PROJECT 4B
+===================
+
+
+
+
+
+
+miscelaneous
+============
+
+5) Write the report to stdout (file descriptor 1)
+   b)  Fix Timezone
+
+
+TASKS COMPLETED
+===============
+
+1) Get a temperature reading using MRAA library functions
+
+2) Convert the sensor value into a temperature (default farenheit)
+
+3) convert to farenheit with a --scale option
+
+4) Create a report (write to stdout, fd=1) that contains
+   a) time of sample in local timezone
+   b) single space
+   c) decimal temperature in degrees and tenths
+   d) newline character
+
+5) Write the report to stdout (file descriptor 1)
+   a) Change a float into a character which can be written to a file
+   c) Print a 0 to the seconds entry when seconds are less than 10
+
+6) Write shutdown when the button is pushed
+
+
+
+
+HOUR LOG
+========
+Monday 4-7pm
+Tuesday 3-4pm
+Wednesday 5:30-6
+Thursday 4:30-730
+Friday 230-330
+
+
+
+
+
