@@ -1,0 +1,21 @@
+NAME: Sean Langley
+EMAIL: sean.langley22@gmail.com
+UID: 504661838
+
+
+This is an implementation of an embedded system temperature sensor, which sends
+temperature readings over a network to a server at lever.cs.ucla.edu. 
+
+The files in this tarball are: 
+
+Makefile: Compiles the executables, with various other commands.
+
+README: What you're reading now. This contains general information about
+this project.
+
+lab4c_tcp.c: Creates a TCP connection and sends unencrypted temperature
+readings to the server using port 18000.
+
+lab4c_tls.c: Uses the openssl API to encrypt communications. It sends 
+encrypted temperature readings to the server at port 19000 using 
+an asymmetric key protocol. 
