@@ -1,0 +1,14 @@
+NAME: Sean Langley
+EMAIL: sean.langley22@gmail.com
+UID: 504661838
+
+Lab partner: Sparsh Gauba
+
+This is a file system interpreter under the Linux EXT2 filesystem.
+The included files are the following:
+
+Makefile: This build the executable and the distribution.
+ext2_fs.h: This is the header file with the definitions
+for the ext2 filesystem.
+lab3a.c: This is the implementation of the file system
+interpreter.
