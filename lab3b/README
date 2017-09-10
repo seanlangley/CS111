@@ -1,0 +1,14 @@
+NAME: Sean Langley
+EMAIL: sean.langley22@gmail.com
+UID: 504661838
+
+This is a file system checker similar to the UNIX fsck. It examines a .csv file which 
+was produced from lab3a and determines whether the file system has been corrupted or not.
+
+The following files are as follows:
+README: The file you are reading now.
+lab3b: The shell script to run the python script.
+lab3b.py: The python script to examine a .csv file.
+Makefile: This has dist and clean commands which make the tarball and clean the directory.
+
+PARTNER: Sparsh Gauba
